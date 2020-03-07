@@ -57,7 +57,7 @@ node {
             sh """
                 python3 -m virtualenv ${WORKSPACE}/venv
                 echo ${WORKSPACE}/venv
-                source ${WORKSPACE}/venv/scripts/activate
+                . ${WORKSPACE}/venv/scripts/activate
                 pip install -r requirements.txt
                 """
         }
