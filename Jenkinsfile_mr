@@ -61,4 +61,11 @@ node {
                 pip install -r requirements.txt
                 """
         }
+        stage('Bandit Testing'){
+            sh """
+            . ${WORKSPACE}/venv/bin/activate
+            pip install bandit
+            bandit -r flaskapp/ -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
+            """
+        }
     }
