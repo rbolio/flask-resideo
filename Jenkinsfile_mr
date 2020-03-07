@@ -54,9 +54,8 @@ node {
 		sh "git branch -vv"
         }
         stage('Create test_venv'){
-                sh "virtualenv —no–site–packages ${WORKSPACE}/venv"
-                sh "source ${WORKSPACE}/venv/scripts/activate"
-                sh "pip install -r requirements.txt"
-                
+                withDockerContainer('3.7-buster') {
+                    sh "pip install -r requirements.txt"
+            }
         }
     }
