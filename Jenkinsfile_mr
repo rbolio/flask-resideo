@@ -54,10 +54,10 @@ node {
 		sh "git branch -vv"
         }
         stage('Create test_venv'){
-                sh "python3 -m virtualenv ${WORKPLACE}/venv"
+                sh "python3 -m virtualenv ${WORKSPACE}/venv"
                 sh 'pwd'
-                sh "echo ${WORKPLACE}"
-                sh "source ${WORKPLACE}/venv/bin/activate"
+                sh "echo ${WORKSPACE}"
+                sh "source ${WORKSPACE}/venv/bin/activate"
 
         }
     }
