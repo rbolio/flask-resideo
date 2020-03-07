@@ -19,18 +19,18 @@ def handleCheckout = {
 					]
 				]
 			],
-			userRemoteConfigs: [
-				[
-					credentialsId: credentialsId,
-					name: env.gitlabTargetNamespace,
-					url: env.gitlabTargetRepoSshURL
-				],
-				[
-					credentialsId: credentialsId,
-					name: env.gitlabSourceNamespace,
-					url: env.gitlabSourceRepoSshURL
-				]
-			]
+userRemoteConfigs: [
+[
+credentialsId: credentialsId,
+name: env.gitlabTargetNamespace,
+url: env.gitlabTargetRepoSshURL
+],
+[
+credentialsId: credentialsId,
+name: env.gitlabSourceNamespace,
+url: env.gitlabSourceRepoSshURL
+]
+]
 		])
 	} else {
 		sh "echo 'No merge request detected. Checking out current branch'"
@@ -49,16 +49,15 @@ def handleCheckout = {
 
 node {
     stage('Get Code') {
-            steps {
-                handleCheckout()
-            }
+                		sh "env | sort"
+		handleCheckout()
+		sh "git branch -vv"
         }
         stage('Create test_venv'){
-            steps{
                 sh "python3 -m virtualenv ${WORKPLACE}/venv"
                 sh 'pwd'
                 sh "echo ${WORKPLACE}"
                 sh "source ${WORKPLACE}/venv/bin/activate"
-            }
+
         }
     }
