@@ -55,9 +55,7 @@ node {
         }
         stage('Create test_venv'){
                 sh "python3 -m virtualenv ${WORKSPACE}/venv"
-                sh 'pwd'
-                sh "echo ${WORKSPACE}"
                 sh "source ${WORKSPACE}/venv/bin/activate"
-
+                sh "pip install -r requirements.txt"
         }
     }
