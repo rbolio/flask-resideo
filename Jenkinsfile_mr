@@ -47,10 +47,8 @@ def handleCheckout = {
 }
 
 
-pipeline {
-    agent { any }
-    stages {
-        stage('Get Code') {
+node {
+    stage('Get Code') {
             steps {
                 handleCheckout()
             }
@@ -64,4 +62,3 @@ pipeline {
             }
         }
     }
-}
