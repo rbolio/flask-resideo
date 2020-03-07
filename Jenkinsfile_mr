@@ -54,7 +54,7 @@ node {
 		sh "git branch -vv"
         }
         stage('Create test_venv'){
-                sh "virtualenv ${WORKSPACE}/venv"
+                sh "python3 -m virtualenv ${WORKSPACE}/venv"
                 sh "source ${WORKSPACE}/venv/bin/activate"
                 sh "pip install -r requirements.txt"
         }
