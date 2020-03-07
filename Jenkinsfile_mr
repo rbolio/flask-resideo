@@ -58,5 +58,6 @@ node {
                 sh "python3 -m virtualenv ${WORKSPACE}/venv"
                 sh "source ${WORKSPACE}/venv/bin/activate"
                 sh "pip install -r requirements.txt"
+                
         }
     }
