@@ -54,10 +54,14 @@ node {
 		sh "git branch -vv"
         }
         stage('Create test_venv'){
-                sh "echo ${WORKSPACE}"
-                sh "python3 -m virtualenv ${WORKSPACE}/venv"
-                sh "source ${WORKSPACE}/venv/bin/activate"
-                sh "pip install -r requirements.txt"
-                
+                sh """
+                    PYENV_HOME=$WORKSPACE/.venv/
+                    if [ –d $PYENV_HOME ]; then
+                       rm –rf $PYENV_HOME
+                    fi
+                    virtualenv —no–site–packages $PYENV_HOME
+                    . $PYENV_HOME/bin/activate
+                    pip install –r requirements.txt
+                """
         }
     }
