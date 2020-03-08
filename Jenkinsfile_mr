@@ -105,9 +105,21 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                sh """
-                    docker build -t resideo/flaskapp:dev  --build-arg user_name=admin --build-arg user_pwd=PasswordPassword --build-arg database_db=BucketListDEV --build-arg db_host=development.cnvajlvavtpv.us-east-1.rds.amazonaws.com --build-arg db_port=8056 .
-                """
+                withCredentials([usernamePassword(credentialsId: 'github-rbolio', passwordVariable: 'db_pwd', usernameVariable: 'db_uname')]) {
+                    sh """
+                        docker build -t rbolio/resideo-flask:dev  --build-arg user_name=${db_uname} --build-arg user_pwd=${db_pwd} --build-arg database_db=BucketListDEV --build-arg db_host=development.cnvajlvavtpv.us-east-1.rds.amazonaws.com --build-arg db_port=8056 .
+                    """
+                }
+            }
+        }
+        stage('Push Image to Dockerhub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'github-rbolio', passwordVariable: 'docker_pwd', usernameVariable: 'docker_uname')]) {
+                    sh """
+                        docker login -u ${docker_uname} -p ${docker_pwd}
+                        docker push rbolio/resideo-flask:dev
+                    """
+                }
             }
         }
     }
