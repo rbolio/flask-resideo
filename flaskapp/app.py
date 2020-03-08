@@ -57,5 +57,5 @@ def sign_up():
         return json.dumps({"html": "<span>Enter the required fields</span>"})
 
 
-if __name__ == "__main__":
+def main():
     app.run(debug=False)

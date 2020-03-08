@@ -132,7 +132,8 @@ setup(
     #   py_modules=["my_module"],
     #
     packages=find_packages(),  # Required
-    package_data={'templates': ['*']},
+    package_data={'templates': ['*.*', '*.html'], 'static': ['']},
+    include_package_data=True,
     # Specify which Python versions you support. In contrast to the
     # 'Programming Language' classifiers above, 'pip install' will check this
     # and refuse to install the project if the version does not match. If you

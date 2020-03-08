@@ -111,7 +111,7 @@ pipeline {
             }
         }
     }
-    post {
+    post {flak
         always {
             echo 'I Finished!'
             junit allowEmptyResults: true, testResults: 'bandit_results.xml'
