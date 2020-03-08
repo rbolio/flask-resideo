@@ -68,25 +68,18 @@ pipeline {
         }
         stage('Bandit Testing'){
             steps{
-                script{
-                    sh """
-                        . ${WORKSPACE}/venv/bin/activate
-                        pip install bandit
-                        bandit -r flaskapp/ -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
-                    """
-                    def output_list = readFile("bandit.out")
-                    output_list.size()
-                    if (output_list.size() != 0) {
-                        error("Bandit caught an issue")
-                        sh "echo ${output_list}"
-                    }
-                }
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install bandit
+                    bandit -f xml -r flaskapp/
+                """
             }
         }
     }
     post{
         always{
-            echo 'I Finished!'
+            echo 'I Finished!'}
+            junit allowEmptyResults: true, testResults: 'bandit_results.xml'
         }
         success{
             echo 'I Succeeded!!'
