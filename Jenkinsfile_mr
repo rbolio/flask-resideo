@@ -79,7 +79,7 @@ pipeline {
             steps {
                 sh """
                     . ${WORKSPACE}/venv/bin/activate
-                    pip install pylint_junit
+                    pip install junit pylint_junit junit-xml
                     pylint --output-format=junit flaskapp/
                 """
             }
