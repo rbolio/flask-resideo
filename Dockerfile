@@ -1,17 +1,15 @@
 FROM python:alpine3.7
 
-RUN mkdir /app \
-     chmod a+rw /app
-
+RUN mkdir /app
 COPY dist/*.whl /app
 WORKDIR /app
+
 # ARGS
 ARG user_name
 ARG user_pwd
 ARG database_db
 ARG db_host
 ARG db_port
-
 
 # ENV
 ENV user_name=${user_name}
@@ -21,7 +19,7 @@ ENV db_host=${db_host}
 ENV db_port=${db_port}
 
 # Build
-RUN pip install .
+RUN pip install *.whl
 EXPOSE 5000
 
 # Run
