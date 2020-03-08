@@ -94,6 +94,15 @@ pipeline {
                 """
             }
         }
+        stage('Build Python Package') {
+            steps {
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install nose mock Flask-Testing
+                    python setup.py bdist_wheel
+                """
+            }
+        }
     }
     post {
         always {
