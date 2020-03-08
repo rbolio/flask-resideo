@@ -106,7 +106,7 @@ pipeline {
             echo 'I Succeeded!!'
         }
         failure {
-            echo 'I failed :('
+            echo 'I failed :( :('
         }
     }
 }
