@@ -90,7 +90,7 @@ pipeline {
                 sh """
                     . ${WORKSPACE}/venv/bin/activate
                     pip install nose mock Flask-Testing
-                    nosetests tests/test_app --with-xunit
+                    nosetests tests/test_app.py --with-xunit
                 """
             }
         }
