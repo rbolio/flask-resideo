@@ -71,7 +71,7 @@ pipeline {
                 sh """
                     . ${WORKSPACE}/venv/bin/activate
                     pip install bandit
-                    bandit -f xml -r flaskapp/
+                    bandit -f xml -r flaskapp/ >> bandit_results.xml
                 """
             }
         }
