@@ -79,8 +79,9 @@ pipeline {
             steps {
                 sh """
                     . ${WORKSPACE}/venv/bin/activate
-                    pip install pylint pylint_junit junit-xml
-                    pylint --output-format=junit flaskapp/
+                    pip install flake8 flake8-junit-report
+                    flake8 . --output-file=flake8.txt
+                    flake8_junit flake8.txt flake8_junit.xml
                 """
             }
         }
@@ -89,6 +90,8 @@ pipeline {
         always {
             echo 'I Finished!'
             junit allowEmptyResults: true, testResults: 'bandit_results.xml'
+
+            junit allowEmptyResults: true, testResults: 'flake8_junit.xml'
         }
         success {
             echo 'I Succeeded!!'
