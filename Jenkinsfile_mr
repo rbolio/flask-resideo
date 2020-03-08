@@ -80,7 +80,7 @@ pipeline {
                 sh """
                     . ${WORKSPACE}/venv/bin/activate
                     pip install flake8 flake8-junit-report
-                    flake8 . --output-file=flake8.txt
+                    flake8 flaskapp/ --output-file=flake8.txt
                     flake8_junit flake8.txt flake8_junit.xml
                 """
             }
