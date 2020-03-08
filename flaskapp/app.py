@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, render_template, request, json
 from flask_cors import CORS
 from flaskext.mysql import MySQL
@@ -8,13 +10,13 @@ CORS(app)
 mysql = MySQL()
 
 # MySQL configurations
-app.config["MYSQL_DATABASE_USER"] = "admin"
-app.config["MYSQL_DATABASE_PASSWORD"] = "PasswordPassword"
-app.config["MYSQL_DATABASE_DB"] = "BucketListDEV"
-app.config[
-    "MYSQL_DATABASE_HOST"
-] = "development.cnvajlvavtpv.us-east-1.rds.amazonaws.com"
-app.config["MYSQL_DATABASE_PORT"] = 8056
+app.config["MYSQL_DATABASE_USER"] = os.getenv("user_name", "test")
+app.config["MYSQL_DATABASE_PASSWORD"] = os.getenv("user_pwd", "test_pwd")
+app.config["MYSQL_DATABASE_DB"] = os.getenv("database_db", "BucketListDEV")
+app.config["MYSQL_DATABASE_HOST"] = os.getenv(
+    "db_host", "development.cnvajlvavtpv.us-east-1.rds.amazonaws.com"
+)
+app.config["MYSQL_DATABASE_PORT"] = os.getenv("db_port", 8056)
 mysql.init_app(app)
 
 
