@@ -1,6 +1,6 @@
 #!groovy
 
-def handleCheckout = {
+void handleCheckout() {
 	if (env.gitlabMergeRequestId) {
 		sh "echo 'Merge request detected. Merging...'"
 		def credentialsId = scm.userRemoteConfigs[0].credentialsId
@@ -46,50 +46,53 @@ url: env.gitlabSourceRepoSshURL
 	}
 }
 
-
-node {
-    stage('Get Code') {
-                		sh "env | sort"
-		handleCheckout()
-		sh "git branch -vv"
+pipeline {
+    agent any
+    stages {
+        stage('Checkout'){
+            steps{
+                sh "env | sort"
+		        handleCheckout()
+		        sh "git branch -vv"
+            }
         }
-        stage('Create test_venv'){
-            sh """
-                python3 -m virtualenv ${WORKSPACE}/venv
-                echo ${WORKSPACE}/venv
-                . ${WORKSPACE}/venv/bin/activate
-                pip install -r requirements.txt
+        stage('Create Environment'){
+            steps{
+                sh """
+                    python3 -m virtualenv ${WORKSPACE}/venv
+                    echo ${WORKSPACE}/venv
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install -r requirements.txt
                 """
+            }
         }
         stage('Bandit Testing'){
-            sh """
-            . ${WORKSPACE}/venv/bin/activate
-            pip install bandit
-            bandit -r flaskapp/ -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
-            """
-            script {
-                def output_list = readFile("bandit.out")
-                output_list.size()
-                if (output_list.size() != 0) {
-                    error("Bandit caught an issue")
-                    sh "echo ${output_list}"
+            steps{
+                script{
+                    sh """
+                        . ${WORKSPACE}/venv/bin/activate
+                        pip install bandit
+                        bandit -r flaskapp/ -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
+                    """
+                    def output_list = readFile("bandit.out")
+                    output_list.size()
+                    if (output_list.size() != 0) {
+                        error("Bandit caught an issue")
+                        sh "echo ${output_list}"
+                    }
                 }
             }
         }
-          } finally {
-        def currentResult = currentBuild.result ?: 'SUCCESS'
-        if (currentResult == 'FAILURE') {
-            echo 'This will run only if the run was marked as unstable'
-        }
-        if (currentResult == 'FAILURE') {
-            echo 'Success'
-        }
-        def previousResult = currentBuild.getPreviousBuild()?.result
-        if (previousResult != null && previousResult != currentResult) {
-            echo 'This will run only if the state of the Pipeline has changed'
-            echo 'For example, if the Pipeline was previously failing but is now successful'
-        }
-
-        echo 'This will always run'
     }
+    post{
+        always{
+            echo 'I Finished!'
+        }
+        success{
+            echo 'I Succeeded!!'
+        }
+        failure{
+            echo 'I failed :('
+        }
     }
+}
