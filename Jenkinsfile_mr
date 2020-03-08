@@ -114,9 +114,9 @@ pipeline {
         }
         stage('Push Image to Dockerhub') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github-rbolio', passwordVariable: 'docker_pwd', usernameVariable: 'docker_uname')]) {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dh_pwd', usernameVariable: 'dh_uname')]) {
                     sh """
-                        docker login -u ${docker_uname} -p ${docker_pwd}
+                        docker login -u ${dh_uname} -p ${dh_pwd}
                         docker push rbolio/resideo-flask:dev
                     """
                 }
