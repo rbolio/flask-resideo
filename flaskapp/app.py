@@ -21,7 +21,7 @@ mysql.init_app(app)
 
 
 @app.route("/")
-def main():
+def home():
     return render_template("index.html")
 
 
@@ -57,6 +57,5 @@ def signUp():
         return json.dumps({"html": "<span>Enter the required fields</span>"})
 
 
-if __name__ == "__main__":
-    app.debug = True
-    app.run()
+if __name__ == '__main__':
+    app.run(debug=True)
