@@ -78,7 +78,7 @@ pipeline {
     }
     post{
         always{
-            echo 'I Finished!'}
+            echo 'I Finished!'
             junit allowEmptyResults: true, testResults: 'bandit_results.xml'
         }
         success{
