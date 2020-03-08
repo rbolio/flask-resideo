@@ -75,6 +75,15 @@ pipeline {
                 """
             }
         }
+        stage('Pylint Testing'){
+            steps{
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install pylint_junit
+                    pylint --output-format=junit flaskapp/
+                """
+            }
+        }
     }
     post{
         always{
