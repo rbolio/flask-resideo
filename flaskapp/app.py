@@ -26,12 +26,12 @@ def home():
 
 
 @app.route("/showSignUp")
-def showSignUp():
+def show_sign_up():
     return render_template("signup.html")
 
 
 @app.route("/signUp", methods=["POST"])
-def signUp():
+def sign_up():
     # read the posted values from the UI
     _name = request.form["inputName"]
     _email = request.form["inputEmail"]
@@ -57,5 +57,5 @@ def signUp():
         return json.dumps({"html": "<span>Enter the required fields</span>"})
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     app.run(debug=False)
