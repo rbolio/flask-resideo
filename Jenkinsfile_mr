@@ -67,5 +67,10 @@ node {
             pip install bandit
             bandit -r flaskapp/ -f custom -o bandit.out --msg-template "{abspath}:{line}: {severity}: {test_id}: {msg}"
             """
+            def output_list = readFile("bandit.out")
+            if (output_list.size() != 0) {
+                error("Bandit caught an issue")
+                sh "echo ${output_list}"
+            }
         }
     }
