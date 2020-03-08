@@ -106,7 +106,7 @@ pipeline {
         stage('Build Docker Image') {
             steps {
                 sh """
-                    docker build -t resideo/flaskapp:dev .
+                    docker build -t resideo/flaskapp:dev  --build-arg user_name=admin --build-arg user_pwd=PasswordPassword --build-arg database_db=BucketListDEV --build-arg db_host=development.cnvajlvavtpv.us-east-1.rds.amazonaws.com --build-arg db_port=8056 .
                 """
             }
         }
