@@ -1,5 +1,8 @@
 FROM python:alpine3.7
 
+RUN mkdir /app \
+     chmod a+rw /app
+
 COPY dist/*.whl /app
 WORKDIR /app
 # ARGS
