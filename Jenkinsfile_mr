@@ -119,6 +119,16 @@ pipeline {
                 }
             }
         }
+        stage('Build Docker Image') {
+            steps {
+                withCredentials([string(credentialsId: 'snyktoken', variable: 'snyk_token')]) {
+                    sh """
+                        snyk auth ${snyk_token}
+                        snyk test --docker rbolio/resideo-flask:dev
+                    """
+                }
+            }
+        }
         stage('Push Image to Dockerhub') {
             steps {
                 withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dh_pwd', usernameVariable: 'dh_uname')]) {
