@@ -112,7 +112,7 @@ pipeline {
         }
         stage('Build Docker Image') {
             steps {
-                withCredentials([usernamePassword(credentialsId: 'github-rbolio', passwordVariable: 'db_pwd', usernameVariable: 'db_uname')]) {
+                withCredentials([usernamePassword(credentialsId: 'aws_db', passwordVariable: 'db_pwd', usernameVariable: 'db_uname')]) {
                     sh """
                         docker build -t rbolio/resideo-flask:dev  --build-arg user_name=${db_uname} --build-arg user_pwd=${db_pwd} --build-arg database_db=BucketListDEV --build-arg db_host=development.cnvajlvavtpv.us-east-1.rds.amazonaws.com --build-arg db_port=8056 .
                     """

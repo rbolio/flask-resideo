@@ -14,11 +14,11 @@ ARG db_host
 ARG db_port
 
 # ENV
-ENV user_name=${user_name}
-ENV user_pwd=${user_pwd}
-ENV database_db=${database_db}
-ENV db_host=${db_host}
-ENV db_port=${db_port}
+ENV user_name=$user_name
+ENV user_pwd=$user_pwd
+ENV database_db=$database_db
+ENV db_host=$db_host
+ENV db_port=$db_port
 
 # Build
 RUN pip install *.whl
