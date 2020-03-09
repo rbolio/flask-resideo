@@ -79,7 +79,7 @@ pipeline {
             steps {
                 withCredentials([string(credentialsId: 'snyktoken', variable: 'snyk_token')]) {
                     sh """
-                        snykSecurity(tokenCredentialId: '${snyk_token}', failOnBuild: true, monitor: true)
+                        snykSecurity(tokenCredentialId: '35000d15-92ff-4d9a-9964-0be10ea0a9d0', failOnBuild: true, monitor: true)
                     """
                 }
             }
