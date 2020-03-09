@@ -139,6 +139,13 @@ pipeline {
                 }
             }
         }
+        stage('Ansible Deploy') {
+            steps {
+                sh """
+                    echo 'deploy'
+                """
+            }
+        }
     }
     post {
         always {
