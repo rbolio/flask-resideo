@@ -1,5 +1,7 @@
 FROM python:alpine3.10
 
+RUN apk add --update gcc
+
 RUN mkdir /app
 COPY dist/*.whl /app
 WORKDIR /app
