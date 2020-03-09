@@ -119,7 +119,7 @@ pipeline {
                 }
             }
         }
-        stage('Build Docker Image') {
+        stage('Snyk Docker Image') {
             steps {
                 withCredentials([string(credentialsId: 'snyktoken', variable: 'snyk_token')]) {
                     sh """
