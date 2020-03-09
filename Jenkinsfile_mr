@@ -77,13 +77,9 @@ pipeline {
         }
         stage('Snyk Testing') {
             steps {
-                withCredentials([string(credentialsId: 'snyktoken', variable: 'token_snyk')]) {
-                    sh """
-                        . ${WORKSPACE}/venv/bin/activate
-                        snyk auth ${token_snyk}
-                        snyk test --command=python --json >> snyk_result.json
-                    """
-                    }
+                withPythonEnv("${WORKSPACE}/venv/) {
+                    snykSecurity additionalArguments: '--command=python', severity: 'medium', snykInstallation: 'snyk@latest', snykTokenId: 'snyk-api-token'
+                }
             }
         }
         stage('Pylint Testing') {
