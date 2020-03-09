@@ -1,4 +1,4 @@
-FROM python:alpine3.7
+FROM python:alpine3.10
 
 RUN mkdir /app
 COPY dist/*.whl /app
