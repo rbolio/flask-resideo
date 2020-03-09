@@ -7,3 +7,4 @@ setuptools
 wheel
 flask-mysql
 flask-cors
+uwsgi
