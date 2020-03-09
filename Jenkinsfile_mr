@@ -81,7 +81,7 @@ pipeline {
                     sh """
                         . ${WORKSPACE}/venv/bin/activate
                         snyk auth ${token_snyk}
-                        snyk test --command=python
+                        snyk test --command=python --json >> snyk_result.json
                     """
                     }
             }
