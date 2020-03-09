@@ -16,7 +16,7 @@ app.config["MYSQL_DATABASE_DB"] = os.getenv("database_db", "BucketListDEV")
 app.config["MYSQL_DATABASE_HOST"] = os.getenv(
     "db_host", "development.cnvajlvavtpv.us-east-1.rds.amazonaws.com"
 )
-app.config["MYSQL_DATABASE_PORT"] = os.getenv("db_port", 8056)
+app.config["MYSQL_DATABASE_PORT"] = int(os.getenv("db_port", 8056))
 mysql.init_app(app)
 
 
