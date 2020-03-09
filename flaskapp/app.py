@@ -9,7 +9,6 @@ app = Flask(__name__)
 CORS(app)
 mysql = MySQL()
 
-
 # MySQL configurations
 app.config["MYSQL_DATABASE_USER"] = os.getenv("user_name", "test")
 app.config["MYSQL_DATABASE_PASSWORD"] = os.getenv("user_pwd", "test_pwd")

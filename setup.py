@@ -4,28 +4,27 @@ https://packaging.python.org/guides/distributing-packages-using-setuptools/
 https://github.com/pypa/sampleproject
 """
 
+import os
 # io.open is needed for projects that support Python 2.7
 # It ensures open() defaults to text mode with universal newlines,
 # and accepts an argument to specify the text encoding
 # Python 3 only projects can skip this import
 from io import open
 from os import path
-import os
+
 # Always prefer setuptools over distutils
 from setuptools import setup, find_packages
 
 here = path.abspath(path.dirname(__file__))
-reqs_file =os.path.join(here, "requirements.txt")
+reqs_file = os.path.join(here, "requirements.txt")
 # Get the long description from the README file
 with open(path.join(here, 'README.md'), encoding='utf-8') as f:
     long_description = f.read()
 
-install_requires = [] # Examples: ["gunicorn", "docutils>=0.3", "lxml==0.5a7"]
+install_requires = []
 if os.path.isfile(reqs_file):
     with open(reqs_file) as f:
         install_requires = f.read().splitlines()
-
-
 
 # Arguments marked as "Required" below must be included for upload to PyPI.
 # Fields marked as "Optional" may be commented out.
