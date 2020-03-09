@@ -75,6 +75,15 @@ pipeline {
                 """
             }
         }
+        stage('Snyk Testing') {
+            steps {
+                withCredentials([string(credentialsId: 'snyktoken', variable: 'snyktoken')]) {
+                    sh """
+                        snykSecurity(tokenCredentialId: '${snyktoken}', failOnBuild: true, monitor: true)
+                    """
+                }
+            }
+        }
         stage('Pylint Testing') {
             steps {
                 sh """
