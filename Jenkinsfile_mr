@@ -77,7 +77,7 @@ pipeline {
         }
         stage('Snyk Testing') {
             steps {
-                snykSecurity severity: 'medium', snykInstallation: 'snyk@latest', snykTokenId: 'snyk-api-token', targetFile: 'requirements.txt'
+                snykSecurity severity: 'medium', snykInstallation: 'snyk@latest', snykTokenId: 'snyk-api-token'
             }
         }
         stage('Pylint Testing') {
