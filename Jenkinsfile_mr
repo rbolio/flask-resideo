@@ -77,7 +77,7 @@ pipeline {
         }
         stage('Snyk Testing') {
             steps {
-                withPythonEnv("${WORKSPACE}/venv/) {
+                withPythonEnv("${WORKSPACE}/venv/") {
                     snykSecurity additionalArguments: '--command=python', severity: 'medium', snykInstallation: 'snyk@latest', snykTokenId: 'snyk-api-token'
                 }
             }
