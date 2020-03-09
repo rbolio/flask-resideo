@@ -8,6 +8,7 @@ from werkzeug.security import generate_password_hash
 app = Flask(__name__)
 CORS(app)
 mysql = MySQL()
+app_host = '0.0.0.0'
 
 # MySQL configurations
 app.config["MYSQL_DATABASE_USER"] = os.getenv("user_name", "test")
@@ -58,4 +59,4 @@ def sign_up():
 
 
 def main():
-    app.run(debug=False)
+    app.run(debug=False, host=app_host)
