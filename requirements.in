@@ -1,0 +1,10 @@
+flask
+pip-tools
+black
+nose
+requests-mock
+setuptools
+wheel
+flask-mysql
+flask-cors
+

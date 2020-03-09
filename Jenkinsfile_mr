@@ -1,0 +1,166 @@
+#!groovy
+
+void handleCheckout() {
+    if (env.gitlabMergeRequestId) {
+        sh "echo 'Merge request detected. Merging...'"
+        def credentialsId = scm.userRemoteConfigs[0].credentialsId
+        checkout([
+                $class           : 'GitSCM',
+                branches         : [[name: "${env.gitlabSourceNamespace}/${env.gitlabSourceBranch}"]],
+                extensions       : [
+                        [$class: 'PruneStaleBranch'],
+                        [$class: 'CleanCheckout'],
+                        [
+                                $class : 'PreBuildMerge',
+                                options: [
+                                        fastForwardMode: 'NO_FF',
+                                        mergeRemote    : env.gitlabTargetNamespace,
+                                        mergeTarget    : env.gitlabTargetBranch
+                                ]
+                        ]
+                ],
+                userRemoteConfigs: [
+                        [
+                                credentialsId: credentialsId,
+                                name         : env.gitlabTargetNamespace,
+                                url          : env.gitlabTargetRepoSshURL
+                        ],
+                        [
+                                credentialsId: credentialsId,
+                                name         : env.gitlabSourceNamespace,
+                                url          : env.gitlabSourceRepoSshURL
+                        ]
+                ]
+        ])
+    } else {
+        sh "echo 'No merge request detected. Checking out current branch'"
+        checkout([
+                $class           : 'GitSCM',
+                branches         : scm.branches,
+                extensions       : [
+                        [$class: 'PruneStaleBranch'],
+                        [$class: 'CleanCheckout']
+                ],
+                userRemoteConfigs: scm.userRemoteConfigs
+        ])
+    }
+}
+
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                sh "env | sort"
+                handleCheckout()
+                sh "git branch -vv"
+            }
+        }
+        stage('Create Environment') {
+            steps {
+                sh """
+                    python3 -m virtualenv ${WORKSPACE}/venv
+                    echo ${WORKSPACE}/venv
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install -r requirements.txt
+                """
+            }
+        }
+        stage('Bandit Testing') {
+            steps {
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install bandit
+                    bandit -f xml -r flaskapp/ -o bandit_results.xml
+                """
+            }
+        }
+        stage('Snyk Testing') {
+            steps {
+                withPythonEnv("${WORKSPACE}/venv/") {
+                    snykSecurity additionalArguments: '--command=python', severity: 'medium', snykInstallation: 'snyk@latest', snykTokenId: 'snyk-api-token'
+                }
+            }
+        }
+        stage('Pylint Testing') {
+            steps {
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install flake8 flake8-junit-report
+                    flake8 flaskapp/ --output-file=flake8.txt
+                    flake8_junit flake8.txt flake8_junit.xml
+                """
+            }
+        }
+        stage('UnitTesting') {
+            steps {
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install nose mock Flask-Testing
+                    nosetests tests/test_app.py --with-xunit
+                """
+            }
+        }
+        stage('Build Python Package') {
+            steps {
+                sh """
+                    . ${WORKSPACE}/venv/bin/activate
+                    pip install nose mock Flask-Testing
+                    python setup.py bdist_wheel
+                """
+            }
+        }
+        stage('Build Docker Image') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'aws_db', passwordVariable: 'db_pwd', usernameVariable: 'db_uname')]) {
+                    sh """
+                        docker build -t rbolio/resideo-flask:dev  --build-arg user_name=${db_uname} --build-arg user_pwd=${db_pwd} --build-arg database_db=BucketListDEV --build-arg db_host=development.cnvajlvavtpv.us-east-1.rds.amazonaws.com --build-arg db_port=8056 .
+                    """
+                }
+            }
+        }
+        stage('Snyk Docker Image') {
+            steps {
+                withCredentials([string(credentialsId: 'snyktoken', variable: 'snyk_token')]) {
+                    sh """
+                        snyk auth ${snyk_token}
+                        snyk test --docker rbolio/resideo-flask:dev
+                    """
+                }
+            }
+        }
+        stage('Push Image to Dockerhub') {
+            steps {
+                withCredentials([usernamePassword(credentialsId: 'dockerhub', passwordVariable: 'dh_pwd', usernameVariable: 'dh_uname')]) {
+                    sh """
+                        docker login -u ${dh_uname} -p ${dh_pwd}
+                        docker push rbolio/resideo-flask:dev
+                    """
+                }
+            }
+        }
+        stage('Ansible Deploy ') {
+            steps {
+                sh """
+                    echo 'deploy'
+                """
+            }
+        }
+    }
+    post {
+        always {
+            echo 'I Finished!'
+            junit allowEmptyResults: true, testResults: 'bandit_results.xml'
+            junit allowEmptyResults: true, testResults: 'flake8_junit.xml'
+            junit allowEmptyResults: true, testResults: 'nosetests.xml'
+
+            sh 'docker rmi rbolio/resideo-flask:dev'
+        }
+        success {
+            echo 'I Succeeded!!'
+        }
+        failure {
+            echo 'I failed :( :('
+        }
+    }
+}
