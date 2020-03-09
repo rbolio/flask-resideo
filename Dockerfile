@@ -1,6 +1,6 @@
 FROM python:alpine3.10
 
-RUN apk add --update gcc
+RUN apk add --update gcc musl-dev linux-headers libc-dev
 
 RUN mkdir /app
 COPY dist/*.whl /app
